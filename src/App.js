@@ -32,6 +32,7 @@ const COLORS = {
 
 Modal.setAppElement('#root')
 
+
 class App extends Component {
   constructor() {
     super();
@@ -40,7 +41,6 @@ class App extends Component {
       modalIsOpen: false,
       pokemon : [],
       myPokemon : [],
-      debug : 'aaaa'
     };
   }
  
@@ -62,33 +62,46 @@ class App extends Component {
     this.setState({modalIsOpen: false});
   } 
 
-  showPokemon=()=>{
-    const { pokemon } = this.state
-    if(this.state.pokemon){
-      return Object.keys(pokemon) && Object.keys(pokemon).map((value, index) => (
-        <div className="card" style={{backgroundColor:"#f3f4f7", marginBottom:"20px", padding: "20px"}} key={pokemon[index].id}>
-            <div className="card__image" style={{width:'30%', display :'inline-block'}}>
-              <img style={{width:'100%'}} src={pokemon[index].imageUrl} alt="" />
-            </div>
-            <div className="card__detail" style={{width:'65%', display :'inline-block', verticalAlign:'top', padding:"15px"}}>
-              <p className="card__title" style={{fontFamily: "Gaegu",fontSize: "40px",margin: "0"}}>{pokemon[index].name}</p>
-              <p className="card__hp">HP</p>
-              <p className="card__str">STR</p>
-              <p className="card__weak">WEAK</p>
-              <p className="card__rate">RATE</p>
-            </div>
-        </div>
-      ))
-    }
+  addPokemon = (pokemon) =>{
+    this.state.myPokemon.push(pokemon)
+    const newPokemon = this.state.pokemon.filter( item => {
+      return item.id !== pokemon.id
+    })
+
+    this.setState({
+      pokemon : newPokemon,
+    })
+    
   }
 
   render() {
-    console.log(this.state)
-
+    const { myPokemon, pokemon } = this.state
+    console.log(myPokemon)
     return (
       <div className="App">
         <h1 style={{textAlign:'center'}}>My Pokedex</h1>
         <button onClick={this.openModal}>Open Modal</button>
+        <div className="app__my-pokemon">
+          {
+            
+            myPokemon && myPokemon.map((myPokemon)=>(
+              <div className="card" style={{backgroundColor:"#f3f4f7", marginBottom:"20px", padding: "20px"}} key={myPokemon.id}>
+                <div className="card__image" style={{width:'20%', display :'inline-block'}}>
+                  <img style={{width:'100%'}} src={myPokemon.imageUrl} alt="" />
+                </div>
+                <div className="card__detail" style={{width:'65%', display :'inline-block', verticalAlign:'top', padding:"15px"}}>
+                  <p className="card__title" style={{fontFamily: "Gaegu",fontSize: "40px",margin: "0"}}>{myPokemon.name}</p>
+                  <p className="card__hp">HP {myPokemon.hp>100 ? '100' : '0' }</p>
+                  <p className="card__str">STR {myPokemon.hp>100 ? '100' : '0' }</p>
+                  <p className="card__weak">WEAK {myPokemon.hp>100 ? '100' : '0' }</p>
+                  <p className="card__rate">RATE</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        
+
 
         <Modal
           isOpen={this.state.modalIsOpen}
@@ -109,8 +122,22 @@ class App extends Component {
               }} placeholder="Find Pokemon"/>
             </div>
             <div className="modal__list" style={{height: '430px', overflow: 'auto'}}>
-              
-             {this.showPokemon()}
+             
+              {pokemon && pokemon.map(pokemon => (
+                  <div className="card" style={{backgroundColor:"#f3f4f7", marginBottom:"20px", padding: "20px"}} key={pokemon.id}>
+                    <div className="card__image" style={{width:'30%', display :'inline-block'}}>
+                      <img style={{width:'100%'}} src={pokemon.imageUrl} alt="" />
+                    </div>
+                    <div className="card__detail" style={{width:'65%', display :'inline-block', verticalAlign:'top', padding:"15px"}}>
+                      <p className="card__title" style={{fontFamily: "Gaegu",fontSize: "40px",margin: "0"}}>{pokemon.name}</p>
+                      <p className="card__hp">HP {pokemon.hp>100 ? '100' : '0' }</p>
+                      <p className="card__str">STR {pokemon.hp>100 ? '100' : '0' }</p>
+                      <p className="card__weak">WEAK {pokemon.hp>100 ? '100' : '0' }</p>
+                      <p className="card__rate">RATE</p>
+                    </div>
+                    <div className="card__footer"><button onClick={()=>this.addPokemon(pokemon)}>Add</button></div>
+                  </div>
+              ))}
               
             </div>
           </div>
